@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "dev.celestialfault.commander.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"CommandContextAccessor"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

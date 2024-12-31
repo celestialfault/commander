@@ -1,0 +1,21 @@
+{
+	"schemaVersion": 1,
+	"id": "commander",
+	"version": "${version}",
+	"name": "commander",
+	"description": "Does the tedious work of building Brigadier commands for you",
+	"authors": ["celeste"],
+	"license": "zlib",
+	"environment": "*",
+	"mixins": ["commander.mixins.json"],
+	"depends": {
+		"fabricloader": "*",
+		"java": ">=21",
+		"fabric-language-kotlin": "*"
+	},
+	"custom": {
+		"modmenu": {
+			"badges": ["library"]
+		}
+	}
+}
