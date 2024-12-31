@@ -13,6 +13,7 @@ public class AllowedRange private constructor() {
 	 * ```
 	 */
 	@Target(AnnotationTarget.TYPE)
+	@Retention(AnnotationRetention.RUNTIME)
 	public annotation class Int(val min: kotlin.Int = kotlin.Int.MIN_VALUE, val max: kotlin.Int = kotlin.Int.MAX_VALUE)
 
 	/**
@@ -27,6 +28,7 @@ public class AllowedRange private constructor() {
 	 * ```
 	 */
 	@Target(AnnotationTarget.TYPE)
+	@Retention(AnnotationRetention.RUNTIME)
 	public annotation class Long(val min: kotlin.Long = kotlin.Long.MIN_VALUE, val max: kotlin.Long = kotlin.Long.MAX_VALUE)
 
 	/**
@@ -41,6 +43,7 @@ public class AllowedRange private constructor() {
 	 * ```
 	 */
 	@Target(AnnotationTarget.TYPE)
+	@Retention(AnnotationRetention.RUNTIME)
 	// Double.MIN_VALUE refers to the smallest possible *positive* value
 	public annotation class Double(val min: kotlin.Double = -kotlin.Double.MAX_VALUE, val max: kotlin.Double = kotlin.Double.MAX_VALUE)
 
@@ -56,6 +59,7 @@ public class AllowedRange private constructor() {
 	 * ```
 	 */
 	@Target(AnnotationTarget.TYPE)
+	@Retention(AnnotationRetention.RUNTIME)
 	// Float.MIN_VALUE refers to the smallest possible *positive* value
 	public annotation class Float(val min: kotlin.Float = -kotlin.Float.MAX_VALUE, val max: kotlin.Float = kotlin.Float.MAX_VALUE)
 }

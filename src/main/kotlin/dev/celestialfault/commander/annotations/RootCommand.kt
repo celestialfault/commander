@@ -15,5 +15,6 @@ package dev.celestialfault.commander.annotations
  * to work around any issues that may arise **on your own**.
  */
 @Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 public annotation class RootCommand(val iKnowWhatImDoingAddingArgumentsToARootCommandNowPleaseBeQuiet: Boolean = false)

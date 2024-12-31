@@ -11,7 +11,7 @@ import kotlin.reflect.full.findAnnotation
 
 public object LongArgument : ArgumentHandler<Long, CommandSource> {
 	override fun argument(parameter: KParameter): ArgumentType<Long> {
-		parameter.findAnnotation<AllowedRange.Long>()?.let {
+		parameter.type.findAnnotation<AllowedRange.Long>()?.let {
 			return LongArgumentType.longArg(it.min, it.max)
 		}
 		return LongArgumentType.longArg()

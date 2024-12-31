@@ -14,4 +14,5 @@ package dev.celestialfault.commander.annotations
  * ```
  */
 @Target(AnnotationTarget.TYPE)
+@Retention(AnnotationRetention.RUNTIME)
 public annotation class Greedy

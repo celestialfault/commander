@@ -11,7 +11,7 @@ import kotlin.reflect.full.findAnnotation
 
 public object IntArgument : ArgumentHandler<Int, CommandSource> {
 	override fun argument(parameter: KParameter): ArgumentType<Int> {
-		parameter.findAnnotation<AllowedRange.Int>()?.let {
+		parameter.type.findAnnotation<AllowedRange.Int>()?.let {
 			return IntegerArgumentType.integer(it.min, it.max)
 		}
 		return IntegerArgumentType.integer()

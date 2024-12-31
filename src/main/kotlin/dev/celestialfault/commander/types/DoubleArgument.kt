@@ -11,7 +11,7 @@ import kotlin.reflect.full.findAnnotation
 
 public object DoubleArgument : ArgumentHandler<Double, CommandSource> {
 	override fun argument(parameter: KParameter): ArgumentType<Double> {
-		parameter.findAnnotation<AllowedRange.Double>()?.let {
+		parameter.type.findAnnotation<AllowedRange.Double>()?.let {
 			return DoubleArgumentType.doubleArg(it.min, it.max)
 		}
 		return DoubleArgumentType.doubleArg()

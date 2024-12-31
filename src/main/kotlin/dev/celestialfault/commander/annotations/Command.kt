@@ -22,5 +22,6 @@ package dev.celestialfault.commander.annotations
  * @param aliases Optional aliases to also register this command under
  */
 @Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 public annotation class Command(val name: String = "", vararg val aliases: String)

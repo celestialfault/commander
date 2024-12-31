@@ -8,5 +8,6 @@ package dev.celestialfault.commander.annotations
  * @param aliases Optional aliases to also register this group under
  */
 @Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 public annotation class Group(val name: String = "", vararg val aliases: String)

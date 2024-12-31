@@ -11,7 +11,7 @@ import kotlin.reflect.full.findAnnotation
 
 public object FloatArgument : ArgumentHandler<Float, CommandSource> {
 	override fun argument(parameter: KParameter): ArgumentType<Float> {
-		parameter.findAnnotation<AllowedRange.Float>()?.let {
+		parameter.type.findAnnotation<AllowedRange.Float>()?.let {
 			return FloatArgumentType.floatArg(it.min, it.max)
 		}
 		return FloatArgumentType.floatArg()

@@ -11,7 +11,7 @@ import kotlin.reflect.full.hasAnnotation
 
 public object StringArgument : ArgumentHandler<String, CommandSource> {
 	override fun argument(parameter: KParameter): ArgumentType<String> {
-		if(parameter.hasAnnotation<Greedy>()) {
+		if(parameter.type.hasAnnotation<Greedy>()) {
 			return StringArgumentType.greedyString()
 		}
 		return StringArgumentType.string()

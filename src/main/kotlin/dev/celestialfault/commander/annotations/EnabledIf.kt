@@ -9,6 +9,7 @@ import kotlin.reflect.KClass
  * the provided class **must** be an `object` class
  */
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 public annotation class EnabledIf(val predicate: KClass<out Supplier<Boolean>>)
 
