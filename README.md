@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-	include(modImplementation("dev.celestialfault:commander:1.0.0"))
+	include(modImplementation("dev.celestialfault:commander:1.0.1"))
 }
 ```
 
