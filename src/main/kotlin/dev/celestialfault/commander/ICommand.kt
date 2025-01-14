@@ -11,7 +11,10 @@ import kotlin.reflect.KFunction
 /**
  * Generic command interface
  *
- * **You should not be directly implementing this!** Use any of the provided abstract implementations instead.
+ * **You should not be directly implementing this!** Breaking changes may occur to this interface with no warning
+ * or any mention in changelogs.
+ *
+ * Instead, inherit from the abstract implementation classes.
  *
  * @see AbstractCommand
  * @see AbstractCommandGroup
@@ -22,7 +25,7 @@ public interface ICommand<S : CommandSource> {
 	public val aliases: List<String>
 	public val enabled: Boolean
 
-	public fun create(name: String): LiteralArgumentBuilder<S>
+	public fun create(name: String, commander: Commander<S>): LiteralArgumentBuilder<S>
 	public fun execute(ctx: CommandContext<S>): Int
 
 	public fun createChild(function: KFunction<*>): AbstractCommand<S>

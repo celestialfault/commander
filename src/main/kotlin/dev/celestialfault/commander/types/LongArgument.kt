@@ -9,7 +9,7 @@ import net.minecraft.command.CommandSource
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.findAnnotation
 
-public object LongArgument : ArgumentHandler<Long, CommandSource> {
+public class LongArgument<S : CommandSource> : ArgumentHandler<Long, S> {
 	override fun argument(parameter: KParameter): ArgumentType<Long> {
 		parameter.type.findAnnotation<AllowedRange.Long>()?.let {
 			return LongArgumentType.longArg(it.min, it.max)
@@ -17,6 +17,6 @@ public object LongArgument : ArgumentHandler<Long, CommandSource> {
 		return LongArgumentType.longArg()
 	}
 
-	override fun parse(ctx: CommandContext<CommandSource>, name: String): Long =
+	override fun parse(ctx: CommandContext<S>, name: String): Long =
 		LongArgumentType.getLong(ctx, name)
 }

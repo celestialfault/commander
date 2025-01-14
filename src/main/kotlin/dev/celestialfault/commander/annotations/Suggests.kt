@@ -11,4 +11,4 @@ import kotlin.reflect.KClass
  */
 @Target(AnnotationTarget.TYPE)
 @Retention(AnnotationRetention.RUNTIME)
-public annotation class Suggestions(val provider: KClass<out SuggestionProvider<out CommandSource>>)
+public annotation class Suggests(val provider: KClass<out SuggestionProvider<out CommandSource>>)

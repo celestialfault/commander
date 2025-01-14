@@ -1,6 +1,7 @@
 package dev.celestialfault.commander
 
 import dev.celestialfault.commander.annotations.Greedy
+import net.minecraft.command.CommandSource
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.KType
@@ -13,7 +14,8 @@ internal fun KType.starProjected() =
 	classifier?.starProjectedType ?: throw UnsupportedOperationException("Cannot star project type $this")
 
 // Types like 'String?' break type lookups if we don't do this star projection
-internal fun getHandler(param: KParameter) = Commander.TYPES[param.type.starProjected()] ?: error("Unknown type ${param.type}")
+internal fun <S : CommandSource> Map<KType, ArgumentHandler<*, S>>.getHandler(param: KParameter) =
+	this[param.type.starProjected()] ?: error("Unknown type ${param.type}")
 
 internal fun parameterSanityCheck(parameters: Collection<KParameter>) {
 	var foundOptional = false

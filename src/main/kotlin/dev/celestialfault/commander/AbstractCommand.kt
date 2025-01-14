@@ -6,9 +6,9 @@ import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.suggestion.SuggestionProvider
 import dev.celestialfault.commander.annotations.Command
 import dev.celestialfault.commander.annotations.EnabledIf
+import dev.celestialfault.commander.annotations.EnabledIf.Companion.get
 import dev.celestialfault.commander.annotations.RootCommand
-import dev.celestialfault.commander.annotations.Suggestions
-import dev.celestialfault.commander.annotations.get
+import dev.celestialfault.commander.annotations.Suggests
 import dev.celestialfault.commander.mixin.CommandContextAccessor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -52,11 +52,13 @@ public abstract class AbstractCommand<S : CommandSource>(protected val function:
 	private val instanceParam by lazy { function.instanceParameter }
 
 	@Suppress("UNCHECKED_CAST")
-	private val params: Map<KParameter, ArgumentHandler<*, S>> by lazy {
-		function.valueParameters
-			.filter { it != contextParam }
-			.associateWith { getHandler(it) as ArgumentHandler<*, S> }
+	private val params: List<KParameter> by lazy {
+		function.valueParameters.filter { it != contextParam }
 	}
+	private lateinit var commander: Commander<S>
+
+	private val handledParams: Map<KParameter, ArgumentHandler<*, S>> get() =
+		params.associate { it to commander.types.getHandler(it) }
 
 	override val name: String = commandAnnotation?.name?.takeIf { it.isNotBlank() } ?: function.name.lowercase()
 	override val aliases: List<String> = commandAnnotation?.aliases?.toList() ?: emptyList()
@@ -65,22 +67,29 @@ public abstract class AbstractCommand<S : CommandSource>(protected val function:
 
 	internal val isRoot: Boolean = function.hasAnnotation<RootCommand>()
 
-	public fun build(builder: LiteralArgumentBuilder<S>) {
-		parameterSanityCheck(params.keys)
+	internal fun build(builder: LiteralArgumentBuilder<S>, commander: Commander<S>) {
+		parameterSanityCheck(params)
+
+		if(!this::commander.isInitialized) {
+			this.commander = commander
+		}
+		require(commander === this.commander) { "Commands cannot be reused with a different Commander instance" }
+
+		val params = handledParams
 
 		if(params.keys.all { it.isOptional }) builder.executes(this::execute)
 		if(params.isEmpty()) return
 
 		// if we're at this point then we know we have arguments of some kind
 		if(function.findAnnotation<RootCommand>()?.iKnowWhatImDoingAddingArgumentsToARootCommandNowPleaseBeQuiet == false) {
-			Commander.LOGGER.warn("@RootCommand annotated function {} has command arguments; this is strongly discouraged against", function)
+			Commander.LOGGER.warn("@RootCommand annotated function {} has command arguments; this is strongly discouraged", function)
 		}
 
 		var tree: ArgumentBuilder<S, *>? = null
 		var last: KParameter? = null
 		params.entries.toList().asReversed().forEach { (param, handler) ->
 			val arg = argument(param.name!!, handler.argument(param))
-			param.type.findAnnotation<Suggestions>()?.let {
+			param.type.findAnnotation<Suggests>()?.let {
 				@Suppress("UNCHECKED_CAST")
 				arg.suggests(it.provider.objectInstance!! as SuggestionProvider<S>)
 			}
@@ -95,8 +104,8 @@ public abstract class AbstractCommand<S : CommandSource>(protected val function:
 		builder.then(tree)
 	}
 
-	override fun create(name: String): LiteralArgumentBuilder<S> =
-		literal(name).also(::build)
+	override fun create(name: String, commander: Commander<S>): LiteralArgumentBuilder<S> =
+		literal(name).also { build(it, commander) }
 
 	override fun execute(ctx: CommandContext<S>): Int {
 		val args = buildMap<KParameter, Any?> {
@@ -104,7 +113,7 @@ public abstract class AbstractCommand<S : CommandSource>(protected val function:
 			contextParam?.let { put(it, ctx) }
 
 			val commandArgs = (ctx as CommandContextAccessor).arguments
-			for((param, handler) in params) {
+			for((param, handler) in handledParams) {
 				val name = param.name ?: continue
 				if(param.isOptional && name !in commandArgs) continue
 				put(param, handler.parse(ctx, name))
@@ -137,7 +146,7 @@ public abstract class AbstractCommand<S : CommandSource>(protected val function:
 	 * Note that you should take care to not swallow [com.mojang.brigadier.exceptions.CommandSyntaxException],
 	 * as the game will typically send a better error message if its thrown.
 	 *
-	 * By default, this method simply `throw`s the error provided.
+	 * By default, this method simply re-`throw`s the error provided.
 	 */
 	protected open fun onError(error: Throwable) {
 		throw error

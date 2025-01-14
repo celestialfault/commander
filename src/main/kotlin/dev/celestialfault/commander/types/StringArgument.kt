@@ -9,7 +9,7 @@ import net.minecraft.command.CommandSource
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.hasAnnotation
 
-public object StringArgument : ArgumentHandler<String, CommandSource> {
+public class StringArgument<S : CommandSource> : ArgumentHandler<String, S> {
 	override fun argument(parameter: KParameter): ArgumentType<String> {
 		if(parameter.type.hasAnnotation<Greedy>()) {
 			return StringArgumentType.greedyString()
@@ -17,5 +17,5 @@ public object StringArgument : ArgumentHandler<String, CommandSource> {
 		return StringArgumentType.string()
 	}
 
-	override fun parse(ctx: CommandContext<CommandSource>, name: String): String = StringArgumentType.getString(ctx, name)
+	override fun parse(ctx: CommandContext<S>, name: String): String = StringArgumentType.getString(ctx, name)
 }

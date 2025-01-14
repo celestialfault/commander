@@ -26,8 +26,18 @@ dependencies {
 	mappings("net.fabricmc:yarn:${deps.minecraft}+build.${deps.yarnBuild}:v2")
 	modImplementation("net.fabricmc:fabric-loader:${deps.fabricLoader}")
 
-	modImplementation("net.fabricmc.fabric-api:fabric-api:${deps.fabricApi}+${deps.minecraft}")
+	modImplementation(fabricApi.module("fabric-command-api-v2", "${deps.fabricApi}+${deps.minecraft}"))
 	modImplementation("net.fabricmc:fabric-language-kotlin:${deps.fabricKotlin}")
+}
+
+loom {
+	// I'd like to split source sets, but Loom is causing issues with Fabric API using it :(
+
+	mods {
+		create("commander") {
+			sourceSet(sourceSets["main"])
+		}
+	}
 }
 
 val targetJava = 21

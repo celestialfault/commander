@@ -11,7 +11,10 @@ import kotlin.reflect.KClass
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
-public annotation class EnabledIf(val predicate: KClass<out Supplier<Boolean>>)
-
-@Internal
-public fun EnabledIf.get() = predicate.objectInstance!!.get()
+public annotation class EnabledIf(val predicate: KClass<out Supplier<Boolean>>) {
+	@Internal
+	public companion object {
+		@Internal
+		public fun EnabledIf.get() = predicate.objectInstance!!.get()
+	}
+}

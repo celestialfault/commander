@@ -9,7 +9,7 @@ import net.minecraft.command.CommandSource
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.findAnnotation
 
-public object IntArgument : ArgumentHandler<Int, CommandSource> {
+public class IntArgument<S : CommandSource> : ArgumentHandler<Int, S> {
 	override fun argument(parameter: KParameter): ArgumentType<Int> {
 		parameter.type.findAnnotation<AllowedRange.Int>()?.let {
 			return IntegerArgumentType.integer(it.min, it.max)
@@ -17,5 +17,5 @@ public object IntArgument : ArgumentHandler<Int, CommandSource> {
 		return IntegerArgumentType.integer()
 	}
 
-	override fun parse(ctx: CommandContext<CommandSource>, name: String): Int = IntegerArgumentType.getInteger(ctx, name)
+	override fun parse(ctx: CommandContext<S>, name: String): Int = IntegerArgumentType.getInteger(ctx, name)
 }

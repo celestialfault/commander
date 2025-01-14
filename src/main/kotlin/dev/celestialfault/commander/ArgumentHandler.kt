@@ -7,6 +7,8 @@ import kotlin.reflect.KParameter
 
 /**
  * Light wrapper around Brigadier's [ArgumentType]
+ *
+ * @see Commander.addHandler
  */
 public interface ArgumentHandler<T, S : CommandSource> {
 	public fun argument(parameter: KParameter): ArgumentType<T>

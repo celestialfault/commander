@@ -9,7 +9,7 @@ import net.minecraft.command.CommandSource
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.findAnnotation
 
-public object FloatArgument : ArgumentHandler<Float, CommandSource> {
+public class FloatArgument<S : CommandSource> : ArgumentHandler<Float, S> {
 	override fun argument(parameter: KParameter): ArgumentType<Float> {
 		parameter.type.findAnnotation<AllowedRange.Float>()?.let {
 			return FloatArgumentType.floatArg(it.min, it.max)
@@ -17,6 +17,6 @@ public object FloatArgument : ArgumentHandler<Float, CommandSource> {
 		return FloatArgumentType.floatArg()
 	}
 
-	override fun parse(ctx: CommandContext<CommandSource>, name: String): Float =
+	override fun parse(ctx: CommandContext<S>, name: String): Float =
 		FloatArgumentType.getFloat(ctx, name)
 }

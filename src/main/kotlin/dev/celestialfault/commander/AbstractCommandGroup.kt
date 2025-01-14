@@ -4,8 +4,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import dev.celestialfault.commander.AbstractCommand.Companion.isCommand
 import dev.celestialfault.commander.annotations.EnabledIf
+import dev.celestialfault.commander.annotations.EnabledIf.Companion.get
 import dev.celestialfault.commander.annotations.Group
-import dev.celestialfault.commander.annotations.get
 import net.minecraft.command.CommandSource
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.hasAnnotation
@@ -19,6 +19,10 @@ import kotlin.reflect.full.memberProperties
  * @see dev.celestialfault.commander.server.ServerCommandGroup
  */
 public abstract class AbstractCommandGroup<S : CommandSource>(protected val instance: Any) : ICommand<S> {
+	init {
+		require(instance::class.hasAnnotation<Group>()) { "Group command class must have a @Group annotation" }
+	}
+
 	protected val children: List<ICommand<S>> by lazy {
 		buildList {
 			instance::class.memberFunctions
@@ -52,16 +56,16 @@ public abstract class AbstractCommandGroup<S : CommandSource>(protected val inst
 	override val enabled: Boolean
 		get() = instance::class.findAnnotation<EnabledIf>()?.get() != false
 
-	override fun create(name: String): LiteralArgumentBuilder<S> {
+	override fun create(name: String, commander: Commander<S>): LiteralArgumentBuilder<S> {
 		val builder = literal(name)
 		children
 			.filter { it != root }
 			.filter { it.enabled }
 			.forEach {
 				val names = listOf(it.name, *it.aliases.toTypedArray())
-				names.forEach { name -> builder.then(it.create(name)) }
+				names.forEach { name -> builder.then(it.create(name, commander)) }
 			}
-		root?.takeIf { it.enabled }?.build(builder)
+		root?.takeIf { it.enabled }?.build(builder, commander)
 		return builder
 	}
 

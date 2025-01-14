@@ -9,7 +9,7 @@ import net.minecraft.command.CommandSource
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.findAnnotation
 
-public object DoubleArgument : ArgumentHandler<Double, CommandSource> {
+public class DoubleArgument<S : CommandSource> : ArgumentHandler<Double, S> {
 	override fun argument(parameter: KParameter): ArgumentType<Double> {
 		parameter.type.findAnnotation<AllowedRange.Double>()?.let {
 			return DoubleArgumentType.doubleArg(it.min, it.max)
@@ -17,6 +17,6 @@ public object DoubleArgument : ArgumentHandler<Double, CommandSource> {
 		return DoubleArgumentType.doubleArg()
 	}
 
-	override fun parse(ctx: CommandContext<CommandSource>, name: String): Double =
+	override fun parse(ctx: CommandContext<S>, name: String): Double =
 		DoubleArgumentType.getDouble(ctx, name)
 }
