@@ -1,5 +1,9 @@
 # Commander
 
+**This project now lives on [Codeberg](https://codeberg.org/celestialfault/commander)**
+
+------
+
 This is a Fabric library mod written in Kotlin which does the tedious work of building Brigadier commands for you
 from basic function definitions.
 
